@@ -1,0 +1,8 @@
+{
+  "name": "VERIX AI — AICTE Smart Validation",
+  "description": "AI-Powered Technical Institution Application & Document Preliminary Validation Platform for AICTE.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

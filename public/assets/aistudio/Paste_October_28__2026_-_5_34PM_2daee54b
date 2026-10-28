@@ -1,0 +1,1349 @@
+# PROJECT: VERIX AI — AICTE SMART VALIDATION PLATFORM
+
+Act as a senior full-stack software engineer, UI/UX designer, AI/ML engineer, Firebase architect, cybersecurity engineer, and product designer.
+
+Build a complete, functional, responsive, production-oriented web application named **VERIX AI — AICTE Smart Validation**, designed to support preliminary validation of technical institution applications and supporting documents for the All India Council for Technical Education (AICTE).
+
+This is not merely a dashboard mockup, static landing page, or UI prototype. Build a coherent full-stack application with real navigation, persistent data, authentication, role-based access, document uploads, validation workflows, officer review, notifications, reports, and audit logging.
+
+The system must remain a decision-support platform. AI-generated flags are preliminary findings, not proof of fraud or non-compliance. Statutory scrutiny, physical inspections, and final regulatory decisions remain with authorized AICTE officials.
+
+---
+
+# 1. REFERENCE IMAGES — MANDATORY DESIGN REQUIREMENT
+
+I will attach the following reference materials to this project:
+
+1. Existing VERIX AI dashboard UI screenshot.
+2. Existing institution/application UI screenshot.
+3. Existing officer-review or validation UI screenshot.
+4. VERIX AI technical workflow diagram.
+5. Impact and benefits slide.
+6. Any additional screenshots showing the current website's design.
+
+Study all attached references before implementing the interface.
+
+## Strict visual preservation rules
+
+- Use the existing VERIX AI design as the primary visual reference.
+- Preserve the same overall layout, navigation/sidebar structure, header, spacing, proportions, typography, card styling, border radii, shadows, icon style, button design, and color palette.
+- Maintain the existing dark navy/blue visual identity, white or light content surfaces where shown, and the same accent colors.
+- Do not arbitrarily change the UI, introduce a new design system, or replace the reference with a generic admin dashboard.
+- Keep existing screen layouts as visually close to the supplied images as technically possible.
+- Preserve the current VERIX AI name and branding.
+- Match the reference aspect ratios and desktop proportions. For wide reference images, optimize the layout for 16:9 desktop screens while keeping it responsive.
+- If an element is not visible in the reference, create it using the same established design language.
+- Maintain consistent design across every screen, modal, table, form, notification, and empty state.
+- Do not use reference images as flat full-screen backgrounds. Recreate the UI as real HTML/CSS components.
+- Do not use screenshots as substitutes for functional controls.
+- Do not remove existing useful elements unless explicitly instructed.
+
+Before coding, inspect the reference images and identify the shared design tokens, navigation, page structure, colors, typography, and component patterns. Use these consistently throughout the application.
+
+If the existing project contains working code, inspect it first. Preserve useful components and behavior rather than rebuilding everything unnecessarily.
+
+---
+
+# 2. PRODUCT PURPOSE
+
+VERIX AI assists in preliminary verification of AICTE-related applications by:
+
+- Checking application completeness.
+- Classifying uploaded documents.
+- Extracting fields using OCR.
+- Identifying missing, incomplete, and expired documents.
+- Checking consistency across application fields and documents.
+- Comparing submitted information with authorized institutional records when integration is available.
+- Flagging potential document alterations, duplicate files, irregular dates, and metadata inconsistencies.
+- Facilitating verification through authorized issuing-authority APIs, official portals, QR codes, digital signatures, and digital repositories when available and permitted.
+- Checking documentary and infrastructure-related evidence against configurable regulatory requirements.
+- Generating evidence-linked findings and preliminary validation reports.
+- Helping officers prioritize unresolved issues and cases needing additional evidence or physical inspection.
+- Maintaining traceable audit logs of validation activity and human decisions.
+
+Never claim access to restricted AICTE databases, DigiLocker records, state portals, or external issuing-authority systems unless an authorized integration has actually been configured.
+
+---
+
+# 3. TECHNOLOGY STACK
+
+Use the following architecture wherever supported by the development environment.
+
+Frontend:
+- React with TypeScript.
+- Vite or the framework already established in the project.
+- Tailwind CSS or the existing styling system.
+- Reusable UI components.
+- Lucide icons.
+- React Router or an equivalent routing solution.
+- Responsive layouts for desktop, tablet, and mobile.
+
+Backend and data:
+- Firebase Authentication.
+- Cloud Firestore.
+- Firebase Storage for document files.
+- Firebase Cloud Functions or a secure server-side API for privileged operations.
+- Firebase App Check where applicable.
+- Firestore Security Rules and Storage Security Rules.
+
+AI and document processing:
+- A Python FastAPI service for OCR and document-processing workflows, when the deployment environment supports it.
+- OCR using a suitable engine such as PaddleOCR or Tesseract.
+- Document classification and structured extraction using suitable document AI models.
+- OpenCV for image preprocessing.
+- Optional LayoutLMv3 or Donut integration where appropriate.
+- Configurable deterministic validation rules.
+- Optional PostgreSQL with pgvector for semantic retrieval if the project infrastructure supports it.
+
+Architecture requirements:
+- Keep AI processing separate from privileged database operations.
+- Never expose service-account credentials, API keys, private verification credentials, or secret environment variables in frontend code.
+- Store all secrets in appropriate server-side environment configuration.
+- Implement an API abstraction for external issuing-authority verification.
+- Provide mock adapters for unavailable external services during development.
+- Keep the frontend functional even when the optional Python AI service is not configured.
+
+If a particular model or infrastructure service is unavailable, implement a clearly labelled fallback. Do not pretend that an unconfigured service is connected.
+
+---
+
+# 4. USER ROLES AND ACCESS CONTROL
+
+Implement three primary roles with different navigation, permissions, and dashboards.
+
+## A. Institution User
+
+Purpose: Prepare, submit, and track institutional applications.
+
+Permissions:
+- Create a draft application.
+- Enter institution and application details.
+- Upload supporting documents.
+- View extraction results and validation findings.
+- Correct permitted fields and replace documents before submission or when clarification is requested.
+- Submit an application for preliminary validation.
+- View source-verification statuses.
+- Respond to officer clarification requests.
+- Track application status and notifications.
+- Download permitted reports.
+- View only their institution's authorized records.
+
+Institution navigation:
+1. Dashboard
+2. New Application
+3. My Applications
+4. Document Centre
+5. Validation Results
+6. Clarifications
+7. Notifications
+8. Profile and Institution Details
+
+## B. AICTE Officer
+
+Purpose: Review validation results and perform authorized regulatory scrutiny.
+
+Permissions:
+- View applications within assigned scope.
+- Review extracted document information.
+- Examine evidence-linked anomaly flags.
+- View applicable regulatory rules and clause references.
+- Review issuer-verification results.
+- Request additional information.
+- Add observations and findings.
+- Mark individual findings as confirmed, dismissed, or requiring further verification.
+- Record review notes and recommendations.
+- Forward cases to the appropriate authorized workflow.
+- View the audit trail for accessible applications.
+
+Officer navigation:
+1. Officer Dashboard
+2. Application Queue
+3. Application Review
+4. AI Validation
+5. Document Verification
+6. Compliance Checklist
+7. Clarification Requests
+8. Reports and Analytics
+9. Audit Trail
+10. Notifications
+11. Profile
+
+## C. Administrator
+
+Purpose: Configure the platform, users, rules, and operational settings.
+
+Permissions:
+- Manage user accounts and role assignments.
+- Manage institution access and officer assignments.
+- Configure validation rules and document checklists.
+- Configure supported application categories.
+- Manage integration settings and service availability.
+- Review system health and validation-job status.
+- View permitted audit logs.
+- Configure notification templates.
+- Manage system reference data.
+
+Administrator navigation:
+1. Admin Dashboard
+2. User Management
+3. Institution Management
+4. Application Categories
+5. Rule Configuration
+6. Checklist Management
+7. Integration Management
+8. System Monitoring
+9. Audit Logs
+10. Security Settings
+
+## Access-control safeguards
+
+- Never rely on frontend role selection as a security boundary.
+- Validate all permissions server-side and in Firestore/Storage Security Rules.
+- Do not allow users to assign themselves an administrator role.
+- Use trusted server-side role claims or a protected role-mapping mechanism.
+- Restrict documents and records by institution and assigned officer scope.
+- Log sensitive administrative changes.
+- Provide a development-only demo mode if needed, clearly separated from production authentication.
+- Do not ship universal default administrator credentials.
+
+---
+
+# 5. GLOBAL UI AND DESIGN SYSTEM
+
+Implement the shared application shell from the reference images.
+
+## Main shell
+
+- Persistent left sidebar matching the reference.
+- VERIX AI logo and brand label.
+- Role-specific navigation.
+- Collapsible sidebar if consistent with the reference.
+- Top header with page title and breadcrumb.
+- Global search where appropriate.
+- Notification bell with unread count.
+- User avatar and account menu.
+- Responsive main content area.
+- Consistent spacing, typography, icons, and colors.
+
+## Reusable components
+
+Create reusable components for:
+- Stat cards.
+- Application status badges.
+- Document status badges.
+- Data tables.
+- Search and filters.
+- Date range filters.
+- Pagination.
+- File upload areas.
+- Document preview panels.
+- Validation progress indicators.
+- Evidence panels.
+- Rule-result rows.
+- Timeline components.
+- Audit-log tables.
+- Charts and visual summaries.
+- Confirmation dialogs.
+- Toast notifications.
+- Empty states.
+- Loading skeletons.
+- Error states.
+- Accessible form fields.
+- Responsive mobile navigation.
+
+Use meaningful, consistent status colors:
+- Green: verified or passed.
+- Amber: pending or requiring attention.
+- Red: discrepancy or failed check.
+- Gray: unavailable, not checked, or informational.
+
+Color must not be the only way to communicate status; include text and icons.
+
+---
+
+# 6. INSTITUTION USER DASHBOARD
+
+Create a polished dashboard consistent with the attached reference.
+
+Display:
+- Welcome message.
+- Institution name and institution identifier where available.
+- Total applications.
+- Draft applications.
+- Submitted applications.
+- Applications requiring correction.
+- Applications awaiting review.
+- Recently updated applications.
+- Application status distribution.
+- Recent notifications.
+- Quick actions.
+
+Quick actions:
+- Start New Application.
+- Upload Documents.
+- View Validation Results.
+- Respond to Clarification.
+
+The cards must use real Firestore-derived data when Firebase is configured. Clicking a card must navigate to the corresponding filtered application list.
+
+Do not hardcode dashboard statistics in production mode.
+
+For a fresh account, show useful empty states with clear calls to action rather than fake historical activity.
+
+---
+
+# 7. NEW APPLICATION WORKFLOW
+
+Create a multi-step form with a clear progress indicator.
+
+Step 1: Application Details
+- Institution name.
+- Institution identifier or AICTE Permanent ID, if available.
+- Application category.
+- Application year.
+- Application reference number, when assigned.
+- Institution address.
+- State and district.
+- Authorized contact details.
+
+Step 2: Regulatory Information
+- Previous approval/EoA details where applicable.
+- Approved programmes and courses.
+- Approved intake.
+- Accreditation or certification information, where applicable.
+- NOC and permission details.
+- Relevant faculty or institutional records.
+- Applicable compliance information.
+- TER payment status where applicable and available.
+
+Step 3: Supporting Documents
+- Show the checklist applicable to the selected category.
+- Mark required and optional documents.
+- Support PDF, JPG, JPEG, and PNG files.
+- Validate file size and allowed MIME types.
+- Display file name, size, upload progress, and upload status.
+- Support document replacement where permitted.
+- Prevent accidental duplicate uploads or clearly flag them.
+- Allow document preview when technically supported.
+
+Example document types:
+- Affidavits and undertakings.
+- Accreditation certificates.
+- NOCs and permissions.
+- Previous EoA or approval records.
+- Faculty records.
+- Land ownership or lease evidence, where applicable.
+- Building and infrastructure evidence.
+- Fire safety and building safety certificates.
+- Financial or payment evidence, where applicable.
+
+These examples must not be treated as universally required. Required documents must depend on the selected application category and the configured official checklist.
+
+Step 4: Review and Submit
+- Display entered information.
+- Display document checklist completion.
+- Identify missing mandatory documents.
+- Show the user a clear summary of unresolved issues.
+- Allow navigation back to edit fields.
+- Require confirmation before submission.
+
+After submission:
+- Generate a unique application reference.
+- Persist the application.
+- Create a validation job.
+- Display the submission confirmation and next steps.
+
+Only allow submission when the applicable workflow permits it. If incomplete submissions are allowed by the configured process, show the deficiencies and record them rather than imposing an invented regulatory restriction.
+
+---
+
+# 8. DOCUMENT CENTRE
+
+Create a dedicated document management page.
+
+Features:
+- Search by document name.
+- Filter by document type.
+- Filter by application.
+- Filter by expiry status.
+- Filter by verification status.
+- Sort by upload date and document name.
+- Show document previews.
+- Display extracted metadata.
+- Display issuer and reference number when extracted.
+- Display issue and expiry dates where applicable.
+- Display file hash or identifier where supported.
+- Display upload and verification history.
+- Provide permitted download and replacement actions.
+
+Document statuses:
+- Uploaded.
+- Processing.
+- Extracted.
+- Validated.
+- Verification Pending.
+- Verified.
+- Mismatch Detected.
+- Expired.
+- Source Unavailable.
+- Manual Review Required.
+- Processing Failed.
+
+Distinguish between:
+1. Document uploaded successfully.
+2. Data extracted successfully.
+3. Checklist validation passed.
+4. Authenticity verification completed.
+5. Official review completed.
+
+These statuses are not interchangeable.
+
+---
+
+# 9. AI DOCUMENT VALIDATION ENGINE
+
+Implement an actual validation pipeline with job tracking and persistent results.
+
+## Validation stages
+
+Stage 1: File and format checks
+- Validate supported file type and size.
+- Compute a cryptographic hash where appropriate.
+- Check for exact duplicate files.
+- Record document metadata.
+- Perform safe file-handling checks.
+
+Stage 2: Image preprocessing
+- Correct skew where feasible.
+- Improve contrast and readability.
+- Normalize orientation.
+- Preserve the original file.
+- Record preprocessing errors.
+
+Stage 3: OCR and extraction
+- Extract text.
+- Detect document type.
+- Extract relevant fields.
+- Capture dates, identifiers, issuer names, reference numbers, and institution details where present.
+- Record page-level extraction results and confidence.
+- Associate extracted fields with page and location evidence when available.
+
+Stage 4: Completeness checks
+- Compare uploaded files with the applicable checklist.
+- Identify missing mandatory documents.
+- Identify incomplete fields.
+- Identify unreadable or unsupported documents.
+
+Stage 5: Expiry checks
+- Extract issue and expiry dates when present.
+- Apply the relevant configured validity rules.
+- Identify expired or potentially expiring documents where applicable.
+- Do not assume a universal expiry period.
+
+Stage 6: Consistency checks
+- Compare relevant values across application fields and uploaded documents.
+- Compare against accessible, authorized institutional records.
+- Identify inconsistent names, identifiers, dates, course details, faculty information, and other relevant fields.
+- Distinguish genuine discrepancies from formatting differences.
+
+Stage 7: Potential anomaly detection
+- Flag suspicious visual edits where the selected model supports this analysis.
+- Identify exact duplicate files.
+- Identify potential near-duplicates where implemented.
+- Inspect metadata inconsistencies where available.
+- Identify unusual dates and identifier mismatches.
+- Do not label an anomaly as proven forgery.
+
+Stage 8: Regulatory rule evaluation
+- Run configurable deterministic rules derived from approved, versioned regulatory checklists.
+- Record the rule identifier, applicable clause reference, rule version, evaluated values, and outcome.
+- Keep the rule engine separate from generative AI.
+- If a clause cannot be confidently mapped, mark it for review rather than inventing a citation.
+
+Stage 9: Source verification
+- Use only authorized and configured integrations.
+- Support QR codes, digital signatures, official portals, APIs, and digital repositories when available.
+- Record source, timestamp, reference identifier, and response.
+- If a source is unavailable, return Source Unavailable or Verification Pending.
+- If no supported integration exists, route the item to manual confirmation.
+
+Stage 10: Report generation
+- Produce a structured application validation report.
+- Show passed checks, warnings, failures, and unchecked items.
+- Link each finding to its supporting evidence.
+- Store the report and its validation-job history.
+- Notify the relevant user.
+
+## Validation output
+
+Each finding should include:
+- Finding ID.
+- Application ID.
+- Document ID, where applicable.
+- Finding category.
+- Severity.
+- Short description.
+- Evidence or extracted value.
+- Expected value or applicable requirement.
+- Rule ID and clause reference, when available.
+- Page number and bounding box when supported.
+- Confidence score, where available.
+- Validation timestamp.
+- Review status.
+- Assigned reviewer, where applicable.
+- Resolution notes.
+
+Use the following finding statuses:
+- Passed.
+- Warning.
+- Discrepancy Detected.
+- Pending Verification.
+- Source Unavailable.
+- Manual Review Required.
+- Resolved.
+- Dismissed by Authorized Reviewer.
+
+A low-confidence extraction must not automatically become a compliance failure.
+
+---
+
+# 10. VALIDATION RESULTS SCREEN
+
+Build a detailed results screen for each application.
+
+Header:
+- Application reference.
+- Institution name.
+- Application category.
+- Submission date.
+- Current workflow status.
+- Validation job status.
+
+Summary cards:
+- Documents submitted.
+- Documents processed.
+- Checks passed.
+- Warnings.
+- Discrepancies.
+- Verifications pending.
+
+Main sections:
+1. Application Overview.
+2. Document Checklist.
+3. Extracted Information.
+4. Cross-Document Consistency.
+5. Potential Anomalies.
+6. Regulatory Compliance.
+7. Issuer Verification.
+8. Infrastructure Evidence.
+9. Review History.
+10. Audit Trail.
+
+Clicking a finding must open its evidence.
+
+For supported document formats, show:
+- Document preview.
+- Page selector.
+- Highlighted evidence region.
+- Extracted value.
+- Expected value.
+- Rule or clause reference.
+- Reason for the alert.
+- Suggested next action.
+
+Where visual coordinates or source evidence are unavailable, show a clear explanation rather than displaying a fake highlight.
+
+Provide PDF or CSV report export as appropriate. Ensure the report reflects actual stored results.
+
+---
+
+# 11. AICTE OFFICER DASHBOARD
+
+Design a review-focused dashboard.
+
+Show:
+- Assigned applications.
+- Awaiting review.
+- Pending source verification.
+- Applications requiring additional information.
+- High-priority unresolved discrepancies.
+- Recently reviewed applications.
+- Review workload by status.
+- Validation processing statistics.
+
+Create an application queue with:
+- Application reference.
+- Institution name.
+- Application category.
+- Submission date.
+- Validation status.
+- Number of unresolved findings.
+- Pending verification count.
+- Assigned officer.
+- Last updated time.
+
+Filters:
+- Application status.
+- Category.
+- Submission period.
+- Assigned officer.
+- Discrepancy severity.
+- Verification status.
+
+Use server-side pagination for large datasets.
+
+Clicking an application opens the officer review workspace.
+
+---
+
+# 12. OFFICER REVIEW WORKSPACE
+
+Use a clear, evidence-oriented interface.
+
+Layout:
+- Application summary at the top.
+- Document list on the left.
+- Document preview in the centre.
+- Extracted information and findings on the right, adapting to the reference layout.
+
+Officer actions:
+- Mark a finding as confirmed.
+- Dismiss a finding with a mandatory explanation where appropriate.
+- Mark a finding as requiring additional verification.
+- Add a review observation.
+- Request clarification from the institution.
+- Record a source-verification outcome.
+- Request additional documents.
+- Assign or reassign the case when authorized.
+- Save review progress.
+- Record a recommendation.
+- Move the application to the next permitted workflow stage.
+
+All consequential actions must:
+- Check authorization.
+- Validate the requested transition.
+- Persist the change.
+- Record actor, timestamp, action, and reason.
+- Notify affected users when appropriate.
+
+Do not implement a one-click autonomous regulatory rejection based only on AI output.
+
+The officer review workflow must preserve human oversight and clearly distinguish AI suggestions from official findings.
+
+---
+
+# 13. DOCUMENT ISSUER VERIFICATION
+
+Build a separate verification interface.
+
+Display:
+- Document type.
+- Issuing authority.
+- Document reference number.
+- Submitted document details.
+- Source-verification method.
+- Verification attempt timestamp.
+- Source response.
+- Matched fields.
+- Mismatched fields.
+- Verification history.
+
+Statuses:
+- Verified.
+- Mismatch Detected.
+- Expired.
+- Verification Pending.
+- Source Unavailable.
+- Manual Review Required.
+
+Implement a provider interface so that each authority integration can be added separately.
+
+For development:
+- Provide mock providers with clearly labelled synthetic responses.
+- Include success, mismatch, unavailable, and timeout scenarios.
+- Never present a mock response as a genuine official verification.
+- Never assume access to a government API without authorization and valid configuration.
+
+For production:
+- Integrate only through approved, documented, authorized mechanisms.
+- Validate source responses server-side.
+- Record timestamps and response references.
+- Use retry limits, timeouts, and safe error handling.
+- Avoid logging sensitive document contents or personal identifiers unnecessarily.
+
+---
+
+# 14. INFRASTRUCTURE COMPLIANCE ASSISTANCE
+
+Add an optional infrastructure evidence module.
+
+Supported evidence may include:
+- Photographs.
+- Videos where supported.
+- Floor plans.
+- Building plans.
+- Infrastructure certificates.
+- Relevant capacity or safety documentation.
+
+Features:
+- Upload and preview evidence.
+- Extract document metadata where applicable.
+- Compare submitted evidence with configured requirements.
+- Flag missing evidence.
+- Identify cases needing further evidence.
+- Record observations.
+- Route cases for manual inspection when required.
+
+Computer vision may identify visible issues only where a suitable model and evaluation process exist.
+
+Do not claim that an image alone proves infrastructure compliance.
+
+The module must display:
+- Evidence item.
+- Applicable requirement.
+- Automated observation.
+- Evidence quality or confidence where available.
+- Reviewer status.
+- Inspection recommendation, if appropriate.
+
+Physical inspection decisions remain with authorized officials.
+
+---
+
+# 15. RULE AND CHECKLIST CONFIGURATION
+
+Build an administrator interface for managing regulatory rules.
+
+Features:
+- Create and edit rules.
+- Enable or disable rules.
+- Assign rules to application categories.
+- Specify required document types.
+- Configure field checks.
+- Configure expiry checks.
+- Configure cross-document consistency checks.
+- Link rules to a verified source and clause reference.
+- Store rule version and effective date.
+- Record rule changes in the audit trail.
+- Preview the checks that a rule will perform.
+
+Each rule should include:
+- Rule ID.
+- Rule name.
+- Description.
+- Application category.
+- Applicable document type.
+- Validation type.
+- Required fields.
+- Comparison conditions.
+- Clause reference.
+- Source document or approved policy reference.
+- Effective date.
+- Version.
+- Active status.
+- Created by and last modified by.
+
+Never invent AICTE policy clauses. Seed only verified references supplied by the project team or an approved source. Mark unverified rules as draft.
+
+Historical validation reports must retain the rule version used at the time of validation.
+
+---
+
+# 16. NOTIFICATIONS AND CLARIFICATION WORKFLOW
+
+Implement persistent in-app notifications.
+
+Examples:
+- Application submitted.
+- Preliminary validation completed.
+- Missing documents identified.
+- Document expired.
+- Source verification pending.
+- Additional information requested.
+- Institution response received.
+- Officer review updated.
+- Application status changed.
+
+Features:
+- Unread count.
+- Mark as read.
+- Mark all as read.
+- Filter by notification type.
+- Link to the relevant application.
+- Timestamp.
+- Notification preferences where supported.
+
+Clarification workflow:
+1. Officer creates a clarification request.
+2. Officer identifies the finding or document.
+3. Institution receives a notification.
+4. Institution submits a response or replacement document.
+5. The system records the response.
+6. Authorized validation is rerun when appropriate.
+7. Officer reviews the response.
+8. The case history is preserved.
+
+---
+
+# 17. REPORTS AND ANALYTICS
+
+Create a reporting dashboard with:
+- Applications received by period.
+- Applications by category.
+- Validation status distribution.
+- Missing-document frequency.
+- Expired-document frequency.
+- Discrepancy categories.
+- Source-verification outcomes.
+- Average preliminary validation time.
+- Manual review workload.
+- Unresolved cases.
+- Validation job success and failure rates.
+
+Use real stored data and meaningful empty states.
+
+Support date filters and category filters.
+
+Allow CSV export of authorized data.
+
+Charts must derive from actual records, not arbitrary hardcoded percentages.
+
+Do not expose personal or institution-confidential information to unauthorized users.
+
+## Prototype impact metrics
+
+Track the following metrics for evaluation:
+- Field-extraction accuracy.
+- Discrepancy-detection precision and recall.
+- Successful source-verification rate.
+- Average validation turnaround time.
+- Manual checking time saved.
+- Applicable checklist coverage.
+- Validation job failure rate.
+
+The proposed targets for the demonstration may be:
+- At least 90% field-extraction accuracy.
+- At least 40% reduction in preliminary checking time.
+- At least 90% discrepancy-detection precision.
+- 100% evaluation coverage of configured applicable checklist items.
+
+These are proposed prototype targets, not established results. Display them as targets until actual testing verifies performance. Store the test methodology and results so they can be reproduced.
+
+---
+
+# 18. AUDIT TRAIL
+
+Implement an append-only audit-event system for security-relevant and workflow actions.
+
+Record:
+- Event ID.
+- Actor ID and role.
+- Application ID, when applicable.
+- Document ID, when applicable.
+- Action.
+- Timestamp.
+- Previous and new workflow statuses, when appropriate.
+- Reason or observation.
+- Rule version, when relevant.
+- Source-verification reference, when relevant.
+- Correlation or validation-job ID.
+
+Audit events should include:
+- Application submission.
+- Document upload or replacement.
+- Validation started or completed.
+- Finding generated.
+- Finding reviewed.
+- Clarification requested.
+- Clarification answered.
+- Verification attempted.
+- Rule configuration changed.
+- Role or access changed.
+- Application workflow changed.
+
+Protect audit events from ordinary user editing and deletion.
+
+Do not store passwords, access tokens, full sensitive documents, or unnecessary personal identifiers in audit messages.
+
+---
+
+# 19. FIREBASE DATA MODEL
+
+Use a clear, scalable Firestore structure.
+
+Suggested collections:
+
+users
+- uid
+- displayName
+- email
+- role
+- institutionId, when applicable
+- assignedScope, when applicable
+- active
+- createdAt
+- updatedAt
+
+institutions
+- institutionId
+- name
+- approved identifiers where available
+- address
+- state
+- district
+- authorized contact
+- createdAt
+- updatedAt
+
+applications
+- applicationId
+- referenceNumber
+- institutionId
+- category
+- applicationYear
+- applicationData
+- workflowStatus
+- submissionDate
+- assignedOfficerId
+- activeValidationJobId
+- createdAt
+- updatedAt
+
+documents
+- documentId
+- applicationId
+- institutionId
+- documentType
+- originalFileName
+- storagePath
+- contentType
+- fileSize
+- fileHash
+- uploadStatus
+- extractionStatus
+- verificationStatus
+- extractedFields
+- uploadedBy
+- uploadedAt
+- updatedAt
+
+validationJobs
+- jobId
+- applicationId
+- status
+- currentStage
+- progress
+- startedAt
+- completedAt
+- errorCode
+- modelVersion
+- ruleSetVersion
+
+findings
+- findingId
+- applicationId
+- documentId
+- category
+- severity
+- description
+- evidence
+- ruleId
+- clauseReference
+- confidence
+- status
+- reviewedBy
+- reviewedAt
+- resolutionNotes
+- createdAt
+
+verificationAttempts
+- verificationId
+- documentId
+- applicationId
+- providerId
+- verificationMethod
+- status
+- sourceReference
+- responseSummary
+- attemptedAt
+- completedAt
+
+rules
+- ruleId
+- name
+- category
+- documentType
+- conditions
+- clauseReference
+- sourceReference
+- version
+- effectiveDate
+- active
+- createdAt
+- updatedAt
+
+clarificationRequests
+- requestId
+- applicationId
+- findingIds
+- requestedBy
+- requestText
+- status
+- responseText
+- responseDocumentIds
+- createdAt
+- respondedAt
+
+notifications
+- notificationId
+- recipientUid
+- type
+- title
+- message
+- applicationId
+- readAt
+- createdAt
+
+auditEvents
+- eventId
+- actorUid
+- actorRole
+- action
+- applicationId
+- documentId
+- details
+- timestamp
+- correlationId
+
+systemSettings
+- configuration values that are safe to store in Firestore
+- integration status
+- supported application categories
+- feature flags
+
+Use timestamps, indexes, pagination, and schema validation as appropriate. Avoid unnecessary duplication and excessive nested arrays that may exceed Firestore limits.
+
+Use server-side transactions or atomic operations for critical workflow changes.
+
+Do not store uploaded binary documents directly in Firestore.
+
+---
+
+# 20. SECURITY AND PRIVACY
+
+Implement security as a core feature.
+
+- Firebase Authentication for user identity.
+- Server-side role verification.
+- Firestore Security Rules.
+- Storage Security Rules.
+- Institution-level record isolation.
+- Assigned-scope restrictions for officers.
+- Protected administrator operations.
+- File type, size, and content validation.
+- Safe filename handling.
+- Malware scanning integration where supported.
+- Secure transport.
+- Least-privilege service accounts.
+- Server-side secret management.
+- Rate limiting for sensitive endpoints.
+- Input validation and output encoding.
+- Protection against unauthorized document downloads.
+- Session management and logout.
+- Audit logging of sensitive operations.
+- Configurable data-retention policies.
+- Secure error handling.
+
+Use encryption provided by the selected cloud services and deployment configuration. Do not claim a specific encryption level unless it has been verified for the actual deployment.
+
+Treat Aadhaar, PAN, financial information, faculty details, and land documents as sensitive data. Avoid collecting unnecessary personal information and redact it from routine logs and displays where appropriate.
+
+Use synthetic or authorized anonymized records for demonstrations.
+
+---
+
+# 21. ERROR HANDLING AND EDGE CASES
+
+Handle these situations gracefully:
+- Unsupported file type.
+- Corrupt PDF.
+- Password-protected PDF.
+- Unreadable or rotated scan.
+- OCR failure.
+- Low-confidence extraction.
+- Duplicate upload.
+- Expired document.
+- Missing mandatory field.
+- Source-verification timeout.
+- External API unavailable.
+- Validation job interrupted.
+- User session expired.
+- Unauthorized action.
+- Duplicate submission.
+- Network failure during upload.
+- Partial document upload.
+- Concurrent officer updates.
+- Invalid workflow transition.
+- Empty dashboards.
+- Missing rule configuration.
+- AI service unavailable.
+
+Every error should have a useful message and a safe next action.
+
+For long-running validation jobs:
+- Display progress.
+- Persist job status.
+- Support retry where appropriate.
+- Prevent accidental duplicate jobs.
+- Use idempotency controls.
+- Keep the original uploaded file intact.
+- Record errors without leaking sensitive information.
+
+---
+
+# 22. FUNCTIONAL INTERACTION REQUIREMENTS
+
+Every visible interactive element must work.
+
+Implement:
+- Sidebar navigation.
+- Search.
+- Sorting.
+- Filtering.
+- Pagination.
+- Form validation.
+- Multi-step forms.
+- File upload and preview.
+- Application creation.
+- Draft saving.
+- Submission.
+- Validation job initiation.
+- Results refresh.
+- Finding review actions.
+- Clarification requests and responses.
+- Notifications.
+- Rule creation and editing.
+- User and role administration.
+- CSV exports.
+- Report downloads.
+- Audit-trail viewing.
+- Responsive menus.
+- Loading states.
+- Success and error notifications.
+- Confirmation dialogs.
+- Logout.
+
+Do not create buttons that merely look functional.
+
+For actions that cannot be completed because a service is unconfigured, show a clear unavailable or configuration-required state.
+
+---
+
+# 23. DEMO DATA AND DEMONSTRATION MODE
+
+Provide a clearly labelled demonstration environment.
+
+Use synthetic institution records and synthetic documents only.
+
+Create sample applications with a range of states:
+- Draft.
+- Submitted.
+- Validation in progress.
+- Validation completed.
+- Missing documents.
+- Expired certificate.
+- Cross-document mismatch.
+- Potential anomaly.
+- Source verification pending.
+- Source unavailable.
+- Awaiting clarification.
+- Under officer review.
+- Review completed.
+
+Create sample findings with visible evidence explanations.
+
+Mock source-verification responses must be marked DEMO / SIMULATED.
+
+Never label synthetic institutions or mock verification results as real AICTE records.
+
+Do not seed fabricated research statistics or claim that the demo data represents real AICTE operational performance.
+
+Provide a convenient development seeding process and a way to reset demo data safely.
+
+---
+
+# 24. USER EXPERIENCE AND ACCESSIBILITY
+
+- Use responsive layouts.
+- Maintain readable text sizes.
+- Provide keyboard-accessible navigation and forms.
+- Label form inputs.
+- Use visible focus states.
+- Provide accessible status descriptions.
+- Support clear validation messages.
+- Prevent destructive actions without confirmation.
+- Avoid unnecessary animations.
+- Keep large data tables usable on smaller screens.
+- Maintain consistency with the supplied reference screenshots.
+- Provide meaningful empty, loading, error, and success states.
+
+Prioritize the desktop UI first if that is the primary presentation environment, but ensure the core workflow remains usable on mobile.
+
+---
+
+# 25. REQUIRED ROUTES
+
+Implement routes appropriate to the role and feature set, including:
+
+/login
+/forgot-password
+/dashboard
+/applications
+/applications/new
+/applications/:applicationId
+/applications/:applicationId/documents
+/applications/:applicationId/validation
+/applications/:applicationId/review
+/documents
+/validation
+/verifications
+/clarifications
+/reports
+/notifications
+/audit-trail
+/rules
+/checklists
+/users
+/institutions
+/integrations
+/settings
+
+Protect routes based on authentication and role.
+
+Redirect users to their role-specific dashboard after login.
+
+Provide useful unauthorized and not-found screens.
+
+---
+
+# 26. IMPLEMENTATION PLAN
+
+Build in a logical sequence while maintaining a working application.
+
+Phase 1: Reference inspection and design system
+- Inspect all reference images.
+- Identify reusable design tokens and layouts.
+- Create the shared UI shell.
+- Reproduce the existing VERIX AI dashboard.
+
+Phase 2: Navigation and core pages
+- Implement all role-specific navigation.
+- Build dashboards, tables, forms, modals, and detail views.
+- Ensure visual consistency across screens.
+
+Phase 3: Authentication and persistence
+- Configure Firebase.
+- Implement authentication.
+- Create Firestore collections.
+- Implement security rules.
+- Connect pages to persistent data.
+
+Phase 4: Application and document workflows
+- Implement application creation.
+- Implement secure uploads.
+- Implement document metadata and preview.
+- Implement submission and status transitions.
+
+Phase 5: Validation pipeline
+- Implement job orchestration.
+- Integrate OCR and extraction.
+- Implement completeness and expiry checks.
+- Implement cross-document validation.
+- Implement configurable deterministic rules.
+- Implement evidence-linked findings.
+
+Phase 6: Officer workflow
+- Implement review queue.
+- Implement finding review.
+- Implement clarification requests.
+- Implement audit events and notifications.
+
+Phase 7: Integrations and analytics
+- Add source-verification adapters.
+- Add simulated adapters for development.
+- Implement reporting and CSV export.
+- Track prototype evaluation metrics.
+
+Phase 8: Security and testing
+- Test authorization.
+- Test cross-institution data isolation.
+- Test file upload restrictions.
+- Test workflow transitions.
+- Test failure and retry scenarios.
+- Test responsive layouts.
+- Test keyboard accessibility.
+- Run production build checks.
+
+Do not stop after Phase 1 or produce only screenshots. Continue until all essential workflows are implemented or a genuine environment limitation blocks progress.
+
+If a deployment service or API credential is missing, complete the code that can be implemented locally and clearly document the remaining configuration steps.
+
+---
+
+# 27. ACCEPTANCE CRITERIA
+
+The project is considered functionally complete when:
+
+1. All reference-based UI screens are implemented consistently.
+2. All three roles have distinct dashboards and permissions.
+3. Authentication works with the configured Firebase project.
+4. Applications can be created and persist across sessions.
+5. Documents can be uploaded securely to Firebase Storage.
+6. Document metadata is stored in Firestore.
+7. Application-specific checklists can be configured.
+8. Validation jobs produce persistent, structured results.
+9. Extracted fields and confidence information are displayed where available.
+10. Missing-document and expiry checks work against configured rules.
+11. Cross-document checks compare supported fields.
+12. Anomaly flags include an explanation and evidence where available.
+13. Issuer-verification statuses distinguish actual verification from simulation.
+14. Officers can review findings and record observations.
+15. Institutions can respond to clarification requests.
+16. Important actions generate audit events.
+17. Notifications link to the relevant workflow.
+18. Reports reflect real stored data.
+19. Security rules prevent unauthorized cross-institution access.
+20. No visible primary button is inert.
+21. The project builds without TypeScript or compilation errors.
+22. The UI works at common desktop, tablet, and mobile widths.
+23. The system never treats AI flags as final regulatory decisions.
+24. The project documents any unavailable integrations honestly.
+
+---
+
+# 28. FINAL INSTRUCTIONS TO THE CODING AGENT
+
+First inspect the existing project and every attached reference image. Then implement the complete application.
+
+Preserve the existing VERIX AI interface. Do not redesign it unnecessarily.
+
+Prioritize a faithful reference-matched UI, real user interactions, persistent Firebase data, secure document handling, a working validation workflow, and a complete officer-review process.
+
+Use reusable components and clean, maintainable code. Do not create a monolithic component or leave the primary workflow as a collection of unrelated demo screens.
+
+Do not fabricate AICTE policy clauses, official verification results, research findings, model accuracy, or achieved time savings.
+
+Use clear DEMO labels wherever data or integrations are simulated.
+
+At the end:
+- Summarize the completed features.
+- List the implemented routes.
+- Identify the Firebase services configured.
+- List environment variables and secrets that still need to be supplied.
+- Explain how to run the application.
+- Explain how to deploy it.
+- List any integrations that remain unavailable.
+- Report the tests and build checks actually performed.
+- Clearly distinguish working features from incomplete features.
+
+Build VERIX AI as a cohesive, secure, responsive, full-stack regulatory decision-support platform while preserving the visual identity of the attached reference UI.
